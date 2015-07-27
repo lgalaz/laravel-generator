@@ -1,0 +1,51 @@
+<?php namespace {{namespace}};
+
+use Illuminate\Validation\Factory;
+
+abstract class AbstractValidator
+{
+    public $validator;
+    protected $data = array();
+    protected $rules = array();
+    protected $errors = array();
+
+    public function __construct(Factory $validator) {
+        $this->validator = $validator;
+    }
+
+
+    public function with(array $data) {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function getErrors() {
+        return $this->errors;
+    }
+
+
+    public function setData(array $data) {
+        $this->data = $data;
+    }
+
+    public function getData() {
+        return $this->data;
+    }
+
+    public function passes() {
+        $validator = $this->validator->make($this->data, $this->rules);
+
+        if( $validator->fails() )
+        {
+            $this->errors = $validator->messages();
+            return false;
+        }
+
+        return true;
+    }
+
+    public function hasErrors() {
+        return ! empty($this->errors);
+    }
+}

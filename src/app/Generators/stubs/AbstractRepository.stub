@@ -1,0 +1,64 @@
+<?php namespace {{namespace}};
+
+use Illuminate\Database\Eloquent\Model;
+use App\Services\Validators\AbstractValidator;
+
+abstract class AbstractRepository
+{
+    protected $model,
+              $errors,
+              $validator;
+
+    public function getErrors() {
+        return $this->errors;
+    }
+
+    public function __construct(Model $model, AbstractValidator $validator) {
+        $this->model = $model;
+        $this->validator = $validator;
+    }
+
+    public function get($id) {
+        return $this->model->whereId($id)->firstOrFail();
+    }
+
+    public function all() {
+        return $this->model->all();
+    }
+
+    public function delete($id) {
+        $entity = $this->model->whereId($id)->firstOrFail();
+
+        return $entity->delete();
+    }
+
+    public function create($data) {
+        $this->validator->with($data);
+
+        if ($this->validator->passes()) {
+
+            return $this->model->create($data);
+        }
+
+        $this->errors = $this->validator->getErrors();
+
+        return null;
+    }
+
+    public function update($id, $data) {
+        $this->validator->with($data);
+
+        if ($this->validator->passes()) {
+
+            $entity = $this->model->whereId($id)->firstOrFail();
+            $entity->fill($data);
+            $entity->save();
+
+            return $entity;
+        }
+
+        $this->errors = $this->validator->getErrors();
+
+        return null;
+    }
+}

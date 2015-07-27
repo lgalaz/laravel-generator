@@ -1,0 +1,11 @@
+<?php namespace {{repository.namespace}};
+
+use App\{{class}};
+use {{validator.namespace}}\{{class}}Validator;
+
+class {{class}}Repository extends AbstractRepository {
+
+    public function __construct({{class}} $entity, {{class}}Validator $validator) {
+        parent::__construct($entity, $validator);
+    }
+}

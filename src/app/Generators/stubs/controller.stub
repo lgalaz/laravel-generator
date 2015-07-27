@@ -1,0 +1,12 @@
+<?php namespace {{controller.namespace}};
+
+use {{repository.namespace}}\{{class}}Repository;
+use Illuminate\Http\Request;
+use Illuminate\Contracts\Routing\ResponseFactory as Response;
+
+class {{class}}Controller extends AbstractController {
+
+    public function __construct(Request $request, Response $response, {{class}}Repository $repository) {
+        parent::__construct($request, $response, $repository);
+    }
+}

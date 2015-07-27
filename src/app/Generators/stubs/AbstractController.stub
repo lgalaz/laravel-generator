@@ -1,0 +1,86 @@
+<?php namespace {{namespace}};
+
+use Illuminate\Http\Request;
+use Illuminate\Contracts\Routing\ResponseFactory as Response;
+use App\Repositories\AbstractRepository;
+
+abstract class AbstractController
+{
+    protected $data,
+              $repository,
+              $response,
+              $request;
+
+    public function __construct(Request $request, Response $response, AbstractRepository $repository) {
+        $this->request = $request;
+        $this->response = $response;
+        $this->repository = $repository;
+        $this->data = $this->request->all();
+    }
+
+    public function destroy($id) {
+        if($this->repository->delete($id)){
+            return $this->response->json(
+                ['error' => false,
+                    'status' =>   'ok' ],
+                200
+            );
+        }
+    }
+
+    public function index() {
+        $entities = $this->repository->all();;
+
+        return $this->response->json(
+            ['error' => false,
+                'entities' => $entities],
+            200
+        );
+    }
+
+    public function show($id) {
+        $entity = $this->repository->get($id);;
+
+        return $this->response->json(
+            ['error' => false,
+                'entity' => $entity],
+            200
+        );
+    }
+
+    public function store() {
+        $entity = $this->repository->create($this->data);
+
+        if ($entity != null) {
+            return $this->response->json(
+                ['error' => false,
+                    'entity' => $entity],
+                201
+            );
+        }
+
+        return $this->response->json(
+            ['error' => true,
+                'errors' => $this->repository->getErrors()],
+            400
+        );
+    }
+
+    public function update($id) {
+        $entity = $this->repository->update($id,$this->data);
+
+        if($entity != null) {
+            return $this->response->json(
+                ['error' => false,
+                    'entity' => $entity],
+                200
+            );
+        }
+
+        return $this->response->json(
+            ['error' => true,
+                'errors' => $this->repository->getErrors()],
+            400
+        );
+    }
+}
