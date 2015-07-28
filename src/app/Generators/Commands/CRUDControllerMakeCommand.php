@@ -122,6 +122,8 @@ class CRUDControllerMakeCommand extends Command
     {
         $stub = $this->files->get(__DIR__ . '/../stubs/route.stub');
 
+        $this->className = strtolower($this->className);
+
         $this->replaceClassName($stub);
 
         $this->files->append('./app/Http/routes.php', $stub);

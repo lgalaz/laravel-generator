@@ -2,7 +2,7 @@
 
 class {{class}}Validator extends AbstractValidator
 {
-    private $rules = array(
-        'id' =>'required|integer'
+    protected $rules = array(
+        'name' =>'required'
     );
 }

@@ -2,9 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Routing\ResponseFactory as Response;
+use Illuminate\Routing\Controller as BaseController;
 use App\Repositories\AbstractRepository;
 
-abstract class AbstractController
+abstract class AbstractController extends BaseController
 {
     protected $data,
               $repository,
