@@ -18,17 +18,20 @@ class CRUDControllerMakeCommand extends Command
         'Validator' => [
             'path' => './app/Services/Validators/',
             'namespace' => 'App\Services\Validators',
-            'errorMsg' => 'could not create validators.'
+            'errorMsg' => 'could not create validator, filename exsits.',
+            'warrningMsg' => 'the abstract validator already exists.'
         ],
         'Repository' => [
             'path' => './app/Repositories/',
             'namespace' => 'App\Repositories',
-            'errorMsg' => 'could not create repositories.'
+            'errorMsg' => 'could not create repository, filename exsits.',
+            'warrningMsg' => 'the abstract repository already exists.'
         ],
         'Controller' => [
-        'path' => './app/Http/Controllers/',
-        'namespace' => 'App\Http\Controllers',
-        'errorMsg' => 'could not create controllers.'
+            'path' => './app/Http/Controllers/',
+            'namespace' => 'App\Http\Controllers',
+            'errorMsg' => 'could not create controller, filename exsits.',
+            'warrningMsg' => 'the abstract controller already exists.'
         ]
     ];
 
@@ -66,12 +69,12 @@ class CRUDControllerMakeCommand extends Command
     private function createClasses($type)
     {
         if ($this->files->exists($path = $this->getPath('Abstract',$type))) {
-            return $this->error($this->config[$type]['errorMsg']);
+            $this->info($this->config[$type]['warrningMsg']);
+        } else {
+            $this->makeDirectory($path);
+
+            $this->files->put($path, $this->compileAbstract($type));
         }
-
-        $this->makeDirectory($path);
-
-        $this->files->put($path, $this->compileAbstract($type));
 
         if ($this->files->exists($path = $this->getPath($this->className, $type))) {
             return $this->error($this->config[$type]['errorMsg']);
